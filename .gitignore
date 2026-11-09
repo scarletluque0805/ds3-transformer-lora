@@ -7,7 +7,5 @@ venv/
 # Checkpoints del Trainer (pesados): se regeneran al entrenar
 resultados*/
 checkpoints/
-*.safetensors
-*.bin
 .DS_Store
 Thumbs.db
