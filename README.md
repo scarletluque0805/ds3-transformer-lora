@@ -10,7 +10,7 @@ Clasificación de noticias **AG News** (Business, Sci_Tech, Sports, World) con u
 | Parte | Pasos de la práctica | Estado |
 |---|---|---|
 | **1 · Datos, modelo base y configuración LoRA** | 1 · 2 · 3 | ✅ `notebooks/04_parte1_datos_modelo_lora.ipynb` |
-| 2 · Fine-tuning en GPU y ablación | 4 | ⏳ pendiente |
+| **2 · Fine-tuning en GPU y ablación** | 4 | 🔄 `notebooks/04_parte2_finetuning_lora.ipynb` listo para ejecutar en Colab (T4) |
 | 3 · Benchmark contra el Módulo 3 y reporte PDF | 5 | ⏳ pendiente |
 
 ## Parte 1 · Decisiones
@@ -44,6 +44,21 @@ Corpus en **inglés** → modelo monolingüe en inglés (el multilingüe gasta e
 
 **Parámetros:** 741.124 entrenables de 66.956.548 (**1,11%**): 147.456 en adaptadores LoRA (0,22%) y 593.668 en el cabezal de clasificación nuevo. Se verificó que el Transformer base queda congelado y que las matrices B arrancan en cero.
 
+## Parte 2 · Fine-tuning (Paso 4)
+
+[![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/scarletluque0805/ds3-transformer-lora/blob/main/notebooks/04_parte2_finetuning_lora.ipynb)
+
+`Trainer` de Hugging Face con padding dinámico, `fp16` y evaluación por época, conservando la mejor época según el F1-macro de validación. Corridas:
+
+| Corrida | r / α | learning rate | Objetivo |
+|---|---|---|---|
+| **principal** | 8 / 16 | 3e-4 | modelo de la entrega |
+| lr_3e-5 | 8 / 16 | 3e-5 | mostrar que el lr del fine-tuning completo es bajo para LoRA |
+| r4 · r16 | 4 / 8 · 16 / 32 | 3e-4 | validar la elección de `r` |
+| roberta_r8 (opcional) | 8 / 16 | 3e-4 | techo de referencia con 12 capas |
+
+Salidas: `reports/parte2/` (historial por época de cada corrida, resumen, figuras, entorno de GPU) y el adaptador LoRA en `models/lora_distilbert_r8/`. Las métricas se completan al ejecutar en GPU.
+
 ## Estructura
 
 ```
@@ -52,9 +67,11 @@ ds3-transformer-lora/
 ├── src/
 │   ├── limpieza.py       # limpieza estructural del Módulo 2 (regex, sin spaCy)
 │   ├── datos_hf.py       # label -> int, splits y DatasetDict de Hugging Face
-│   └── modelos.py        # candidatos del Hub, LoraConfig y conteo de parámetros
+│   ├── modelos.py        # candidatos del Hub, LoraConfig y conteo de parámetros
+│   └── entrenamiento.py  # tokenización, métricas, TrainingArguments y entrenamiento con LoRA
 ├── notebooks/
-│   └── 04_parte1_datos_modelo_lora.ipynb
+│   ├── 04_parte1_datos_modelo_lora.ipynb
+│   └── 04_parte2_finetuning_lora.ipynb
 ├── reports/
 │   ├── baseline_modulo3.json   # métricas del baseline TF-IDF (Pre-entrega 3)
 │   ├── config_parte1.json      # configuración que usa la Parte 2
