@@ -61,16 +61,17 @@ Corpus en **inglés** → modelo monolingüe en inglés (el multilingüe gasta e
 
 | Corrida | % entrenable | train loss final | val loss final | F1-macro val (mejor época) | Tiempo |
 |---|---|---|---|---|---|
-| **principal** (r=8, lr 3e-4) | 1,11% | 0,224 | 0,261 | **0,9186** (época 1) | 1,03 min |
-| lr_3e-5 | 1,11% | 0,316 | 0,299 | 0,8982 (época 4) | 0,86 min |
+| **principal** (r=8, lr 3e-4) | 1,11% | 0,224 | 0,261 | **0,9186** (época 1) | 0,98 min |
+| lr_3e-5 | 1,11% | 0,316 | 0,299 | 0,8982 (época 4) | 0,84 min |
 | r4 | 1,00% | 0,234 | 0,257 | 0,9146 (época 3) | 0,77 min |
-| r16 | 1,33% | 0,210 | 0,262 | 0,9200 (época 1) | 0,77 min |
-| roberta_r8 (techo) | 0,71% | 0,218 | 0,222 | 0,9260 (época 3) | 1,47 min |
+| r16 | 1,33% | 0,210 | 0,262 | 0,9200 (época 1) | 0,78 min |
+| roberta_r8 (techo) | 0,71% | 0,218 | 0,222 | 0,9260 (época 3) | 1,48 min |
 
 - **Learning rate:** con 3e-5, el valor del fine-tuning completo, el modelo arranca con una pérdida de 0,88 y termina 2 puntos abajo: los adaptadores no llegan a ajustarse en 4 épocas. Con 3e-4 alcanza su mejor F1 en la primera época.
 - **Rango:** r=4, 8 y 16 quedan a menos de 0,6 puntos entre sí. La tarea tiene rango intrínseco bajo, como se anticipó en la Parte 1, y r=8 es un punto medio razonable.
 - **Sin sobreajuste:** la pérdida de validación se estabiliza en torno a 0,26 mientras la de train sigue bajando. Por eso `load_best_model_at_end` conserva la mejor época.
-- **RoBERTa** (12 capas) gana 0,7 puntos en validación con un 43% más de tiempo y el doble de VRAM.
+- **RoBERTa** (12 capas) gana 0,7 puntos en validación con un 51% más de tiempo y el doble de VRAM.
+- **Reproducibilidad:** ejecuté el notebook dos veces en sesiones distintas de Colab y obtuve métricas idénticas y el mismo adaptador, bit a bit (semilla 42).
 
 ![Curvas](reports/parte2/figures/curvas_principal.png)
 
