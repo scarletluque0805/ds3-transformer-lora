@@ -1,0 +1,9 @@
+# torch: usar el que trae Colab (con CUDA). Versión usada en local: 2.15.0
+transformers==5.22.2
+datasets==5.1.0
+peft==0.21.2
+accelerate==1.15.0
+scikit-learn==1.9.1
+pandas==3.0.5
+numpy==2.5.3
+matplotlib==3.11.2
