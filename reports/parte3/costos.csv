@@ -1,0 +1,7 @@
+,A · TF-IDF + NB (M3),B · DistilBERT + LoRA (M4)
+F1-macro test,0.892,0.9025
+hardware,CPU,Tesla T4
+tiempo de entrenamiento,0.44 s,"62 s (1.03 min, 4 épocas)"
+parámetros entrenados,103.120 (log-probabilidades),"741,124 (1,11% de 67.0 M)"
+inferencia 2.000 noticias,0.09 s (+5.5 s spaCy),1.95 s
+almacenamiento,≈1 MB,3.0 MB adaptador + 268 MB modelo base

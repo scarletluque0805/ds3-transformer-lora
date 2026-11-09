@@ -1,0 +1,4 @@
+,precision_macro,recall_macro,f1_macro,f1_weighted,accuracy
+A · TF-IDF + Naive Bayes (M3),0.8924,0.892,0.892,0.892,0.892
+B · DistilBERT + LoRA (M4),0.9063,0.9015,0.9025,0.9025,0.9015
+Diferencia B − A (puntos),1.3817,0.95,1.0439,1.0439,0.95

@@ -11,7 +11,7 @@ Clasificación de noticias **AG News** (Business, Sci_Tech, Sports, World) con u
 |---|---|---|
 | **1 · Datos, modelo base y configuración LoRA** | 1 · 2 · 3 | ✅ `notebooks/04_parte1_datos_modelo_lora.ipynb` |
 | **2 · Fine-tuning en GPU y ablación** | 4 | ✅ `notebooks/04_parte2_finetuning_lora.ipynb` ejecutado en Colab (Tesla T4) |
-| **3 · Benchmark contra el Módulo 3 y reporte PDF** | 5 | 🔄 `notebooks/04_parte3_benchmark.ipynb` listo para ejecutar |
+| **3 · Benchmark contra el Módulo 3 y reporte PDF** | 5 | ✅ `notebooks/04_parte3_benchmark.ipynb` ejecutado en Colab (Tesla T4) · [`Luque_Elizabeth_Checkpoint_NLP3.pdf`](Luque_Elizabeth_Checkpoint_NLP3.pdf) |
 
 ## Parte 1 · Decisiones
 
@@ -81,11 +81,30 @@ Corpus en **inglés** → modelo monolingüe en inglés (el multilingüe gasta e
 
 - **Learning rate:** con 3e-5, el valor del fine-tuning completo, el modelo arranca con una pérdida de 0,88 y termina 2 puntos abajo: los adaptadores no llegan a ajustarse en 4 épocas. Con 3e-4 alcanza su mejor F1 en la primera época.
 - **Rango:** r=4, 8 y 16 quedan a menos de 0,6 puntos entre sí. La tarea tiene rango intrínseco bajo, como se anticipó en la Parte 1, y r=8 es un punto medio razonable.
-- **Sin sobreajuste:** la pérdida de validación se estabiliza en torno a 0,26 mientras la de train sigue bajando. Por eso `load_best_model_at_end` conserva la mejor época.
+- **Sobreajuste leve:** la pérdida de validación se estabiliza en torno a 0,26 mientras la de train sigue bajando. Por eso `load_best_model_at_end` conserva la mejor época.
 - **RoBERTa** (12 capas) gana 0,7 puntos en validación con un 51% más de tiempo y el doble de VRAM.
-- **Reproducibilidad:** ejecuté el notebook dos veces en sesiones distintas de Colab y obtuve métricas idénticas y el mismo adaptador, bit a bit (semilla 42).
+- **Reproducibilidad:** ejecuté el notebook tres veces en sesiones distintas de Colab y obtuve métricas idénticas (semilla 42). Solo cambian los tiempos: la corrida principal tardó 61,8 s, 58,8 s y 63,2 s.
 
 ![Curvas](reports/parte2/figures/curvas_principal.png)
+
+## Parte 3 · Benchmark contra el Módulo 3 (Paso 5)
+
+[![Abrir en Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/scarletluque0805/ds3-transformer-lora/blob/main/notebooks/04_parte3_benchmark.ipynb)
+
+Evalué el mismo test de 2.000 noticias que el baseline, una sola vez. Antes, recargué el adaptador y comprobé que reproduce el F1 de validación (0,9186, idéntico).
+
+| Métrica (macro, test) | A · TF-IDF + NB (M3) | B · DistilBERT + LoRA (M4) | B − A |
+|---|---|---|---|
+| Precision | 0,8924 | 0,9063 | +1,38 pts |
+| Recall | 0,8920 | 0,9015 | +0,95 pts |
+| **F1** | 0,8920 | **0,9025** | **+1,04 pts** |
+
+- Mejora en World (+2,18), Sci_Tech (+1,32) y Sports (+1,17). Empeora un poco en Business (−0,49), porque el modelo **sobrepredice Business** (567 predicciones para 500 noticias).
+- **No es significativa al 5%:** McNemar da p = 0,115 (75 noticias corregidas contra 56 que rompe), y el IC 95% bootstrap de la diferencia va de −0,1 a +2,2 puntos.
+- **Costo:** unos 62 s de GPU contra 0,44 s de CPU. La inferencia de las 2.000 noticias tarda 1,95 s en la T4, contra 5,6 s del baseline con spaCy. El adaptador pesa 3 MB.
+- Todo el detalle, con capturas de las ejecuciones, está en el PDF y en `reports/parte3/`.
+
+![Matrices](reports/parte3/figures/matrices_confusion_A_vs_B.png)
 
 ## Estructura
 

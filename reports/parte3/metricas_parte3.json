@@ -1,0 +1,74 @@
+{
+  "gpu": "Tesla T4",
+  "val_f1_recargado": 0.9186325628239989,
+  "test": {
+    "A_tfidf_nb": {
+      "accuracy": 0.892,
+      "precision_macro": 0.8924399189466526,
+      "recall_macro": 0.892,
+      "f1_macro": 0.8920325701776648,
+      "f1_weighted": 0.8920325701776648
+    },
+    "B_distilbert_lora": {
+      "accuracy": 0.9015,
+      "precision_macro": 0.9062564849546275,
+      "recall_macro": 0.9015,
+      "f1_macro": 0.9024714374687786,
+      "f1_weighted": 0.9024714374687786
+    }
+  },
+  "por_clase": {
+    "Precision A": {
+      "Business": 0.8353,
+      "Sci_Tech": 0.87,
+      "Sports": 0.9546,
+      "World": 0.9099
+    },
+    "Precision B": {
+      "Business": 0.7937,
+      "Sci_Tech": 0.9055,
+      "Sports": 0.9739,
+      "World": 0.952
+    },
+    "Recall A": {
+      "Business": 0.862,
+      "Sci_Tech": 0.87,
+      "Sports": 0.968,
+      "World": 0.868
+    },
+    "Recall B": {
+      "Business": 0.9,
+      "Sci_Tech": 0.862,
+      "Sports": 0.972,
+      "World": 0.872
+    },
+    "F1 A": {
+      "Business": 0.8484,
+      "Sci_Tech": 0.87,
+      "Sports": 0.9613,
+      "World": 0.8884
+    },
+    "F1 B": {
+      "Business": 0.8435,
+      "Sci_Tech": 0.8832,
+      "Sports": 0.973,
+      "World": 0.9102
+    },
+    "Δ F1 (pts)": {
+      "Business": -0.4939,
+      "Sci_Tech": 1.3197,
+      "Sports": 1.1702,
+      "World": 2.1796
+    }
+  },
+  "mcnemar": {
+    "solo_acierta_A": 56,
+    "solo_acierta_B": 75,
+    "p_valor": 0.1154544882922597
+  },
+  "inferencia_test_seg": 1.951289176940918,
+  "errores_test": {
+    "A": 216,
+    "B": 197
+  }
+}

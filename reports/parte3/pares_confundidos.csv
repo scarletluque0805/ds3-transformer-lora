@@ -1,0 +1,13 @@
+real,predicha,errores A (NB),errores B (LoRA),reducción
+Business,Sci_Tech,39,36,3
+Business,Sports,5,2,3
+Business,World,25,12,13
+Sci_Tech,Business,45,64,-19
+Sci_Tech,Sports,4,0,4
+Sci_Tech,World,16,5,11
+Sports,Business,4,7,-3
+Sports,Sci_Tech,10,2,8
+Sports,World,2,5,-3
+World,Business,36,46,-10
+World,Sci_Tech,16,7,9
+World,Sports,14,11,3
