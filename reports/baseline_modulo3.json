@@ -1,0 +1,36 @@
+{
+  "fuente": "Pre-entrega 3 · github.com/scarletluque0805/ds3-clasificador-tfidf",
+  "modelo": "TF-IDF (1,2) + Multinomial Naive Bayes (alpha=0.3)",
+  "split": "ag_news_test.csv (2.000 noticias)",
+  "macro": {
+    "precision": 0.8924,
+    "recall": 0.892,
+    "f1": 0.892
+  },
+  "accuracy": 0.892,
+  "por_clase": {
+    "Business": {
+      "precision": 0.835,
+      "recall": 0.862,
+      "f1": 0.848
+    },
+    "Sci_Tech": {
+      "precision": 0.87,
+      "recall": 0.87,
+      "f1": 0.87
+    },
+    "Sports": {
+      "precision": 0.955,
+      "recall": 0.968,
+      "f1": 0.961
+    },
+    "World": {
+      "precision": 0.91,
+      "recall": 0.868,
+      "f1": 0.888
+    }
+  },
+  "tiempo_entrenamiento_seg": 0.44,
+  "hardware": "CPU",
+  "parametros_entrenables": "103.120 (4 clases x 25.780 términos, log-probabilidades) "
+}
