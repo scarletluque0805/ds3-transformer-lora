@@ -1,0 +1,6 @@
+corrida,modelo,r,alpha,lr,% entrenable,train_loss final,val_loss final,val F1-macro (mejor),mejor época,minutos,VRAM pico (GB)
+principal,distilbert-base-uncased,8,16,0.0003,1.11,0.2238,0.2607,0.9186,1,1.03,0.75
+lr_3e-5,distilbert-base-uncased,8,16,3e-05,1.11,0.3158,0.2991,0.8982,4,0.86,0.76
+r4,distilbert-base-uncased,4,8,0.0003,1.0,0.2343,0.2567,0.9146,3,0.77,0.75
+r16,distilbert-base-uncased,16,32,0.0003,1.33,0.2104,0.2619,0.92,1,0.77,0.76
+roberta_r8,roberta-base,8,16,0.0003,0.71,0.2183,0.222,0.926,3,1.47,1.46

@@ -1,0 +1,8 @@
+{
+  "gpu": "Tesla T4",
+  "vram_gb": 15.6,
+  "torch": "2.14.1+cu130",
+  "transformers": "5.22.1",
+  "peft": "0.21.2",
+  "datasets": "4.8.5"
+}
