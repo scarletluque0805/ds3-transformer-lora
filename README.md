@@ -10,8 +10,8 @@ Clasificación de noticias **AG News** (Business, Sci_Tech, Sports, World) con u
 | Parte | Pasos de la práctica | Estado |
 |---|---|---|
 | **1 · Datos, modelo base y configuración LoRA** | 1 · 2 · 3 | ✅ `notebooks/04_parte1_datos_modelo_lora.ipynb` |
-| **2 · Fine-tuning en GPU y ablación** | 4 | 🔄 `notebooks/04_parte2_finetuning_lora.ipynb` listo para ejecutar en Colab (T4) |
-| 3 · Benchmark contra el Módulo 3 y reporte PDF | 5 | ⏳ pendiente |
+| **2 · Fine-tuning en GPU y ablación** | 4 | ✅ `notebooks/04_parte2_finetuning_lora.ipynb` ejecutado en Colab (Tesla T4) |
+| **3 · Benchmark contra el Módulo 3 y reporte PDF** | 5 | 🔄 `notebooks/04_parte3_benchmark.ipynb` listo para ejecutar |
 
 ## Parte 1 · Decisiones
 
@@ -57,7 +57,22 @@ Corpus en **inglés** → modelo monolingüe en inglés (el multilingüe gasta e
 | r4 · r16 | 4 / 8 · 16 / 32 | 3e-4 | validar la elección de `r` |
 | roberta_r8 (opcional) | 8 / 16 | 3e-4 | techo de referencia con 12 capas |
 
-Salidas: `reports/parte2/` (historial por época de cada corrida, resumen, figuras, entorno de GPU) y el adaptador LoRA en `models/lora_distilbert_r8/`. Las métricas se completan al ejecutar en GPU.
+**Resultados en validación (Tesla T4, 800 noticias):**
+
+| Corrida | % entrenable | train loss final | val loss final | F1-macro val (mejor época) | Tiempo |
+|---|---|---|---|---|---|
+| **principal** (r=8, lr 3e-4) | 1,11% | 0,224 | 0,261 | **0,9186** (época 1) | 1,03 min |
+| lr_3e-5 | 1,11% | 0,316 | 0,299 | 0,8982 (época 4) | 0,86 min |
+| r4 | 1,00% | 0,234 | 0,257 | 0,9146 (época 3) | 0,77 min |
+| r16 | 1,33% | 0,210 | 0,262 | 0,9200 (época 1) | 0,77 min |
+| roberta_r8 (techo) | 0,71% | 0,218 | 0,222 | 0,9260 (época 3) | 1,47 min |
+
+- **Learning rate:** con 3e-5, el valor del fine-tuning completo, el modelo arranca con una pérdida de 0,88 y termina 2 puntos abajo: los adaptadores no llegan a ajustarse en 4 épocas. Con 3e-4 alcanza su mejor F1 en la primera época.
+- **Rango:** r=4, 8 y 16 quedan a menos de 0,6 puntos entre sí. La tarea tiene rango intrínseco bajo, como se anticipó en la Parte 1, y r=8 es un punto medio razonable.
+- **Sin sobreajuste:** la pérdida de validación se estabiliza en torno a 0,26 mientras la de train sigue bajando. Por eso `load_best_model_at_end` conserva la mejor época.
+- **RoBERTa** (12 capas) gana 0,7 puntos en validación con un 43% más de tiempo y el doble de VRAM.
+
+![Curvas](reports/parte2/figures/curvas_principal.png)
 
 ## Estructura
 
@@ -68,14 +83,19 @@ ds3-transformer-lora/
 │   ├── limpieza.py       # limpieza estructural del Módulo 2 (regex, sin spaCy)
 │   ├── datos_hf.py       # label -> int, splits y DatasetDict de Hugging Face
 │   ├── modelos.py        # candidatos del Hub, LoraConfig y conteo de parámetros
-│   └── entrenamiento.py  # tokenización, métricas, TrainingArguments y entrenamiento con LoRA
+│   ├── entrenamiento.py  # tokenización, métricas, TrainingArguments y entrenamiento con LoRA
+│   └── evaluacion.py     # carga del adaptador, inferencia y test de McNemar
 ├── notebooks/
 │   ├── 04_parte1_datos_modelo_lora.ipynb
-│   └── 04_parte2_finetuning_lora.ipynb
+│   ├── 04_parte2_finetuning_lora.ipynb
+│   └── 04_parte3_benchmark.ipynb
 ├── reports/
 │   ├── baseline_modulo3.json   # métricas del baseline TF-IDF (Pre-entrega 3)
+│   ├── baseline_predicciones_test.csv  # predicciones del baseline sobre el mismo test
 │   ├── config_parte1.json      # configuración que usa la Parte 2
+│   ├── parte2/                 # historiales, resumen de corridas, figuras y entorno de GPU
 │   └── figures/
+├── models/lora_distilbert_r8/   # adaptador LoRA entrenado (3 MB)
 ├── assets/               # vocabulario WordPiece (respaldo sin acceso al Hub)
 └── requirements.txt
 ```

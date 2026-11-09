@@ -32,5 +32,10 @@
   },
   "tiempo_entrenamiento_seg": 0.44,
   "hardware": "CPU",
-  "parametros_entrenables": "103.120 (4 clases x 25.780 términos, log-probabilidades) "
+  "parametros_entrenables": "103.120 (4 clases x 25.780 términos, log-probabilidades) ",
+  "inferencia_test_seg": {
+    "solo_modelo_cpu": 0.093,
+    "con_preprocesamiento_spacy_cpu": 5.53
+  },
+  "tamano_modelo_mb": 1.0
 }
