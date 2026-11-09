@@ -21,6 +21,18 @@ Clasificación de noticias **AG News** (Business, Sci_Tech, Sports, World) con u
 - **Entrada al modelo:** solo la limpieza estructural del Módulo 2 (HTML, URLs, firmas de agencia, datelines), **sin lematizar ni quitar stop-words**, porque el Transformer necesita texto natural y su contexto.
 - **`max_length = 72`**: p95 de sub-tokens WordPiece, el mismo valor del EDA del Módulo 2. Cubre el 95,7% de las noticias sin truncar, con padding dinámico.
 
+#### Convenciones de tokenización, padding y truncado
+Las dejo explícitas para que el resultado se pueda reproducir tal cual:
+
+| Aspecto | Convención que uso |
+|---|---|
+| Tokenizer | WordPiece de `distilbert-base-uncased` (pasa todo a minúsculas, vocabulario de 30.522 sub-tokens) |
+| Tokens especiales | `add_special_tokens=True` (default): cada noticia queda `[CLS] … [SEP]`. **El largo que mido para el p95 ya incluye esos 2 tokens**, así que 72 es el largo total que recibe el modelo |
+| Cómo mido el largo | `len(input_ids)` de cada noticia del train **sin truncar**. Es un conteo por documento, no de ocurrencias totales |
+| Truncado | `truncation=True, max_length=72` en `src/entrenamiento.py::tokenizar`. Se recorta el final y `[SEP]` se conserva siempre |
+| Padding | Dinámico con `DataCollatorWithPadding`. Relleno con `[PAD]` (id 0) solo hasta la noticia más larga de cada lote, y la `attention_mask` pone 0 en esas posiciones para que la atención las ignore |
+| Splits | Los mismos de las pre-entregas anteriores: test de 2.000 noticias idéntico al del Módulo 3, validación 10% estratificada con `seed=42` |
+
 ### Modelo base (Paso 2): `distilbert-base-uncased`
 
 | Modelo | Idioma | Capas | Parámetros | Entrenables con LoRA (r=8, Q-V) |
@@ -108,7 +120,28 @@ En Google Colab con GPU (`Entorno de ejecución → Cambiar tipo de entorno → 
 ```python
 !git clone https://github.com/scarletluque0805/ds3-transformer-lora.git
 %cd ds3-transformer-lora
+!pip uninstall -y -q torchao          # la versión que trae Colab choca con peft >= 0.16
 !pip install -q -r requirements.txt
 ```
 
-y abrir `notebooks/04_parte1_datos_modelo_lora.ipynb`. La Parte 1 también corre en CPU.
+y abrir `notebooks/04_parte1_datos_modelo_lora.ipynb`. La Parte 1 también corre en CPU. Igual no hace falta hacer esto a mano: la primera celda de cada notebook ya clona el repo e instala lo necesario cuando detecta Colab.
+
+En una máquina propia (Python 3.10 a 3.13):
+
+```bash
+python -m venv .venv && source .venv/bin/activate      # en Windows: .venv\Scripts\activate
+pip install -r requirements.txt
+```
+
+### Versiones
+En `requirements.txt` uso **rangos** y no versiones fijas. En las pre-entregas anteriores había fijado las versiones exactas de mi entorno local, y en un entorno con Python 3.11 la instalación fallaba. Con rangos, pip elige la combinación que existe para cada versión de Python. Las versiones exactas con las que entrené están registradas en `reports/parte2/entorno.json`.
+
+Para no repetir el error, esta vez lo verifiqué antes de subirlo:
+
+| Prueba | Esperado | Observado |
+|---|---|---|
+| `uv pip compile` de `requirements.txt` para Python 3.10, 3.11, 3.12 y 3.13 | resuelve en las 4 | ✅ resuelve en las 4. En 3.10 baja solo a numpy 2.2.6 y torch 2.14.1; en 3.11 elige numpy 2.4.6 |
+| Instalación en un venv **nuevo con Python 3.11** (todo menos torch) | instala sin errores | ✅ transformers 5.22.2, peft 0.21.2, datasets 5.1.0, numpy 2.4.6, pandas 3.1.1 |
+| Ejecución real del entrenamiento y la evaluación | corre de punta a punta | ✅ en Colab: torch 2.14.1, transformers 5.22.1, datasets 4.8.5, todas dentro de los rangos. Lo corrí 3 veces y las métricas dieron idénticas |
+
+torch no lo reinstalé en el venv de prueba porque la versión con CUDA pesa varios GB. Colab y Kaggle ya lo traen, y su instalación queda cubierta por la prueba de resolución.

@@ -1,9 +1,16 @@
-# torch: usar el que trae Colab (con CUDA). Versión usada en local: 2.15.0
-transformers==5.22.2
-datasets==5.1.0
-peft==0.21.2
-accelerate==1.15.0
-scikit-learn==1.9.1
-pandas==3.0.5
-numpy==2.5.3
-matplotlib==3.11.2
+# Python 3.10 a 3.13. Verificado que resuelve en las cuatro versiones (ver "Versiones" en el README).
+# Uso rangos en vez de versiones fijas para que pip elija una combinación instalable
+# según la versión de Python. Las versiones exactas que usé están en reports/parte2/entorno.json.
+#
+# torch: en Colab y Kaggle ya viene instalado con CUDA; no hace falta reinstalarlo.
+# En una máquina sin GPU alcanza con: pip install torch --index-url https://download.pytorch.org/whl/cpu
+torch>=2.2
+transformers>=4.46,<6
+peft>=0.13
+datasets>=2.20
+accelerate>=0.34
+scikit-learn>=1.3
+scipy>=1.11
+pandas>=2.0
+numpy>=1.26
+matplotlib>=3.7
